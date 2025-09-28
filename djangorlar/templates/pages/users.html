@@ -1,4 +1,19 @@
 {% extends "base.html" %}
 {% block title %}
-
+  Users Page
+{% endblock %}
+{% block title %}
+  <div class="card-group">
+    {% for user in users_list %}
+    <div class="card">
+      <img src="{% static 'img/user-icon.png' %}" class="card-img-top" alt="not found">
+      <div class="card-body">
+        <h5 class="card-title">User Card</h5>
+        <p class="card-text">First name: { user.first_name }</p>
+        <p class="card-text">Last name: { user.last_name }</p>
+        <p class="card-text">Age: { user.age }</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 {% endblock %}

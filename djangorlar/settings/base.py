@@ -23,6 +23,7 @@ DJANGO_AND_THIRD_PARTY_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap5',
 ]
 PROJECT_APPS = [
     'apps.pages.apps.PagesConfig',
