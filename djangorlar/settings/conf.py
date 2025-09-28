@@ -1,4 +1,6 @@
 # Project modules
+import os
+
 from decouple import config
 
 # ----------------------------------------------
@@ -9,4 +11,4 @@ ENV_POSSIBLE_OPTIONS = (
     'prod',
 )
 ENV_ID = config('DJANGORlAR_ENV_ID', cast=str)
-SECRET_KEY = 'django-insecure-g^do)(_9-5+^#zcnxs&ykel^fo3*oq-#8oo9jmvc^_r7@j!@-e'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
