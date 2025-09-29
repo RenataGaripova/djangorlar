@@ -3,10 +3,21 @@
   Welcome Page
 {% endblock %}
 {% block content %}
-  <h1> Welcome to Djangorlar! </h1>
-  <ul>
-    <li><a href="#">User list</a></li>
-    <li><a href="#">City Count</a></li>
-    <li><a href="#">Counter</a></li>
-  </ul>
+  <div class="container">
+    <h1> Welcome to Djangorlar! </h1>
+    <h3> Pages list: </h3>
+    <ul>
+      <li><a href="{% url 'pages:users_page' %}">User list</a></li>
+      <li><a href="{% url 'pages:city_time_page' %}">City Time</a></li>
+      <li><a href="{% url 'pages:counter_page' %}">Counter</a></li>
+    </ul>
+  </div>
+  <style>
+    body {
+      font-size: 15pt;
+    }
+    .container {
+      margin: 50px;
+    }
+  </style>
 {% endblock %}

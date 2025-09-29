@@ -1,19 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}
   Users Page
 {% endblock %}
-{% block title %}
+{% block content %}
+  <h1 style="text-align: center; margin-top: 50px;"> Check the users below: </h1>
   <div class="card-group">
-    {% for user in users_list %}
-    <div class="card">
-      <img src="{% static 'img/user-icon.png' %}" class="card-img-top" alt="not found">
-      <div class="card-body">
-        <h5 class="card-title">User Card</h5>
-        <p class="card-text">First name: { user.first_name }</p>
-        <p class="card-text">Last name: { user.last_name }</p>
-        <p class="card-text">Age: { user.age }</p>
+    {% for user in users %}
+      <div class="card">
+        <img class="image" src="{% static 'img/user-icon.png' %}" class="card-img-top" alt="not found">
+        <div class="card-body">
+          <h5 class="card-title">User Card</h5>
+          <p class="card-text">First name: {{ user.first_name }}</p>
+          <p class="card-text">Last name: {{ user.last_name }}</p>
+          <p class="card-text">Age: {{ user.age }}</p>
+        </div>
       </div>
-    </div>
     {% endfor %}
   </div>
+  <style>
+    .image {
+      height:300px;
+    }
+    .card-group{
+      margin: 10px;
+      display: flex;
+      flex-direction: row;
+      padding: 10px;
+    }
+    .card{
+      margin: 50px;
+      font-size: 15pt;
+      text-align: center;
+      border: solid grey 0.5px;
+      border-radius: 5px;
+    }
+  </style>
 {% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  Users Page
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <h1 class="header"> Try counter: </h1>
+    <button id="addOne">
+        +
+    </button>
+    <input id="number" type="number" value="0" disabled>
+    <button id="minusOne">
+        -
+    </button>
+    <button id="reset">
+        Reset
+    </button>
+  </div>
+  <style>
+    #reset {
+        background-color: rgb(187, 32, 32);
+    }
+    .container {
+        text-align: center;
+    }
+    .header {
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      color: white;
+      font-size: 13pt;
+      background-color: rgb(12, 183, 0);
+    }
+  </style>
+  <script>
+    const add = document.getElementById("addOne");
+    const minus = document.getElementById("minusOne");
+    const reset = document.getElementById("reset");
+    const number = document.getElementById("number");
+    add.addEventListener("click", function() {
+        current_number = parseInt(number.value, 10);
+        number.value = current_number + 1;
+    });
+    minus.addEventListener("click", function() {
+        current_number = parseInt(number.value, 10);
+        number.value = current_number - 1;
+    });
+    reset.addEventListener("click", function() {
+        number.value = 0;
+    })
+  </script>
+{% endblock %}
