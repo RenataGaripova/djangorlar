@@ -1,11 +1,11 @@
 from settings.base import *
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 DATABASES = {
-    {
-        'default': 'django.db.sqlite3',
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
     },
 }
