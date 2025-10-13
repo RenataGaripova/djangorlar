@@ -25,8 +25,8 @@ DJANGO_AND_THIRD_PARTY_APPS = [
     'django.contrib.staticfiles',
 ]
 PROJECT_APPS = [
-    'apps.catalogs.apps.CatalogsConfig',
-    'apps.commerces.apps.CommercesConfig'
+    'apps.abstracts.apps.AbstractsConfig',
+    'apps.taski.apps.TaskiConfig'
 ]
 INSTALLED_APPS = DJANGO_AND_THIRD_PARTY_APPS + PROJECT_APPS
 
