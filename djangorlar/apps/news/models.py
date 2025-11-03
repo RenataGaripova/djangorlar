@@ -23,8 +23,8 @@ class Category(models.Model):
     description = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["name"]
-        verbose_name_plural = "categories"
+        ordering = ["slug"]
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.name
@@ -35,7 +35,7 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("news:category-detail", kwargs={"slug": self.slug})
+        return reverse("news-news:category-detail", kwargs={"slug": self.slug})
 
 
 class Tag(models.Model):
@@ -69,8 +69,8 @@ class Article(TimeStampedModel):
     slug = models.SlugField(max_length=300, unique=True, blank=True)
     summary = models.TextField(blank=True)
     content = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="articles")
-    tags = models.ManyToManyField(Tag, blank=True, related_name="articles")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, related_name="related_articles")
+    tags = models.ManyToManyField(Tag, blank=True, related_name="articles_all")
 
     # publication controls
     published = models.BooleanField(default=False)
@@ -78,7 +78,7 @@ class Article(TimeStampedModel):
     is_featured = models.BooleanField(default=False)
 
     # optional hero image
-    hero_image = models.ImageField(upload_to="news/hero_images/", null=True, blank=True)
+    hero_image = models.ImageField(upload_to="/hero_images/", null=False, blank=False)
 
     objects = ArticleQuerySet.as_manager()
 
@@ -106,7 +106,7 @@ class Article(TimeStampedModel):
 
 
 class Comment(TimeStampedModel):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments_all")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=120, blank=True)
     email = models.EmailField(blank=True)
