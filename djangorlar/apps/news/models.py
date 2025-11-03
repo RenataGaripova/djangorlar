@@ -1,3 +1,5 @@
+import math
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -23,7 +25,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["id"]
         verbose_name_plural = "categories"
 
     def __str__(self):
@@ -35,11 +37,11 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("news:category-detail", kwargs={"slug": self.slug})
+        return reverse("news:absolute-category-detail", kwargs={"slug": self.slug})
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=76, unique=True)
     slug = models.SlugField(max_length=60, unique=True, blank=True)
 
     class Meta:
@@ -65,7 +67,7 @@ class ArticleQuerySet(models.QuerySet):
 
 class Article(TimeStampedModel):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="articles")
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=455)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
     summary = models.TextField(blank=True)
     content = models.TextField()
@@ -91,7 +93,7 @@ class Article(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.title)[:250]
+            base = slugify(self.title)[:258]
             slug = base
             # ensure uniqueness
             counter = 0

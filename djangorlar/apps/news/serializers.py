@@ -1,3 +1,5 @@
+import abc
+
 from rest_framework import serializers
 from .models import Article, Category, Tag, Comment
 from django.contrib.auth import get_user_model
@@ -17,7 +19,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ("id", "name", "slug", "url")
+        fields = ("id", "name",  "url")
         read_only_fields = ("id", "slug")
 
 
@@ -34,7 +36,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("id", "article", "user", "name", "email", "body", "approved", "created_at")
+        fields = ("id", "article", "user", "name", "email", "body", "approved", "created_at", "deleted_at")
         read_only_fields = ("id", "approved", "created_at")
 
     def create(self, validated_data):
@@ -82,7 +84,7 @@ class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ("title", "summary", "content", "category", "tag_names", "published", "publish_at", "is_featured", "hero_image")
+        fields = ("title", "summary", "content", "category", "tag_names", "publish_at", "is_featured", "hero_image")
 
     def create(self, validated_data):
         tag_names = validated_data.pop("tag_names", [])
