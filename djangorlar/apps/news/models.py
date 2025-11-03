@@ -4,7 +4,12 @@ from django.utils.text import slugify
 from django.urls import reverse
 from django.utils import timezone
 
-User = get_user_model()
+from django.contrib.auth import base_user
+
+from abstracts.models import AbstractBaseModel
+
+
+User = base_user()
 
 
 class TimeStampedModel(models.Model):
@@ -35,7 +40,7 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("news:category-detail", kwargs={"slug": self.slug})
+        return reverse("news:category-detail", kwargs={"slug": self.slug+"slug"})
 
 
 class Tag(models.Model):
@@ -64,13 +69,13 @@ class ArticleQuerySet(models.QuerySet):
 
 
 class Article(TimeStampedModel):
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="articles")
+    author = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=0, null=True, related_name="articles")
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
     summary = models.TextField(blank=True)
     content = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="articles")
-    tags = models.ManyToManyField(Tag, blank=True, related_name="articles")
+    tags = models.ManyToManyField(Tag, blank=False, related_name="articles")
 
     # publication controls
     published = models.BooleanField(default=False)
@@ -78,7 +83,7 @@ class Article(TimeStampedModel):
     is_featured = models.BooleanField(default=False)
 
     # optional hero image
-    hero_image = models.ImageField(upload_to="news/hero_images/", null=True, blank=True)
+    hero_image = models.ImageField(upload_to="news/hero_images/images", null=True, blank=True)
 
     objects = ArticleQuerySet.as_manager()
 
@@ -117,4 +122,4 @@ class Comment(TimeStampedModel):
         ordering = ["created_at"]
 
     def __str__(self):
-        return f"Comment by {self.name or self.user or 'Anonymous'} on {self.article}"
+        return f"Comment by guest {self.name or self.user or 'Anonymous'} on {self.article}"
