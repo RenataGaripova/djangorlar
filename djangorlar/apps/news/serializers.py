@@ -1,4 +1,5 @@
 import abc
+import math
 
 from rest_framework import serializers
 from .models import Article, Category, Tag, Comment
@@ -10,7 +11,7 @@ User = get_user_model()
 class UserPreviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username", "get_full_name")
+        fields = ("username", "get_full_name")
         read_only_fields = fields
 
 
