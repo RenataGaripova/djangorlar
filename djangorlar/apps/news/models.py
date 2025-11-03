@@ -1,3 +1,4 @@
+import math
 import datetime
 
 from django.db import models
@@ -28,7 +29,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["id"]
         verbose_name_plural = "categories"
 
     def __str__(self):
@@ -44,7 +45,7 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=76, unique=True)
     slug = models.SlugField(max_length=60, unique=True, blank=True)
 
     class Meta:
@@ -70,7 +71,7 @@ class ArticleQuerySet(models.QuerySet):
 
 class Article(TimeStampedModel):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="articles")
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=455)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
     content = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="articles")
@@ -95,7 +96,7 @@ class Article(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.title)[:250]
+            base = slugify(self.title)[:258]
             slug = base
             counter = 0
             while Article.objects.filter(slug=slug).exclude(pk=self.pk).exists():
