@@ -26,7 +26,8 @@ DJANGO_AND_THIRD_PARTY_APPS = [
 ]
 PROJECT_APPS = [
     'apps.abstracts.apps.AbstractsConfig',
-    'apps.taski.apps.TaskiConfig'
+    'apps.taski.apps.TaskiConfig',
+    'apps.news.apps.NewsConfig'
 ]
 INSTALLED_APPS = DJANGO_AND_THIRD_PARTY_APPS + PROJECT_APPS
 
