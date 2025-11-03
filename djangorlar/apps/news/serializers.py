@@ -1,3 +1,5 @@
+import math
+
 from rest_framework import serializers
 from .models import Article, Category, Tag, Comment
 from django.contrib.auth import get_user_model
@@ -8,7 +10,7 @@ User = get_user_model()
 class UserPreviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username", "get_full_name")
+        fields = ("username", "get_full_name")
         read_only_fields = fields
 
 
@@ -17,7 +19,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ("id", "name", "slug", "url")
+        fields = ("name", "slug", "url")
         read_only_fields = ("id", "slug")
 
 

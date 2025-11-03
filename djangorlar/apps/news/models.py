@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -6,12 +8,15 @@ from django.utils import timezone
 
 User = get_user_model()
 
+default_time = datetime.datetime.now()
+
 
 class TimeStampedModel(models.Model):
     """Abstract base class that provides created/modified timestamps."""
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField()
 
     class Meta:
         abstract = True
@@ -35,7 +40,7 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("news:category-detail", kwargs={"slug": self.slug})
+        return reverse("news:category-detail-super", kwargs={"slug": self.slug})
 
 
 class Tag(models.Model):
@@ -67,7 +72,6 @@ class Article(TimeStampedModel):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="articles")
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
-    summary = models.TextField(blank=True)
     content = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="articles")
     tags = models.ManyToManyField(Tag, blank=True, related_name="articles")
@@ -93,7 +97,6 @@ class Article(TimeStampedModel):
         if not self.slug:
             base = slugify(self.title)[:250]
             slug = base
-            # ensure uniqueness
             counter = 0
             while Article.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 counter += 1
@@ -106,8 +109,8 @@ class Article(TimeStampedModel):
 
 
 class Comment(TimeStampedModel):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    article = models.ForeignKey(Article, on_delete=models.SET_NULL, related_name="comments", null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False)
     name = models.CharField(max_length=120, blank=True)
     email = models.EmailField(blank=True)
     body = models.TextField()
@@ -117,4 +120,4 @@ class Comment(TimeStampedModel):
         ordering = ["created_at"]
 
     def __str__(self):
-        return f"Comment by {self.name or self.user or 'Anonymous'} on {self.article}"
+        return f"Comment by user {self.name or self.user or 'Anonymous'} on {self.article}"

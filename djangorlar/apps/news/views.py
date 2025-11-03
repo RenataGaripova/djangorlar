@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -32,7 +34,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.select_related("category", "author").prefetch_related("tags")
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
-    filterset_fields = ("category__slug", "tags__slug", "author__id", "published")
+    filterset_fields = ("category__slug", "author__id", "published")
     search_fields = ("title", "summary", "content")
     ordering_fields = ("publish_at", "created_at", "is_featured")
     pagination_class = StandardResultsSetPagination
