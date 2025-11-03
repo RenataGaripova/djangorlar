@@ -23,6 +23,7 @@ DJANGO_AND_THIRD_PARTY_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'phone_field',
 ]
 PROJECT_APPS = [
     'apps.abstracts.apps.AbstractsConfig',
