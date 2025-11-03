@@ -25,8 +25,6 @@ class IsAdminOrReadOnly(permissions.BasePermission):
     """Custom permission: safe methods allowed for everyone, write for admins only."""
 
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
         return request.user and request.user.is_staff
 
 
@@ -50,14 +48,14 @@ class ArticleViewSet(viewsets.ModelViewSet):
         qs = self.queryset
         # if not admin, only show published articles
         if not (self.request.user and self.request.user.is_staff):
-            qs = qs.filter(published=True, publish_at__lte=timezone.now())
+            qs = qs.filter(published=True, publish_at__lte=datetime.datetime.now())
         return qs
 
-    @action(detail=False, methods=["get"], url_path="featured")
+    @action(detail=False, methods=["get", "post"], url_path="featured")
     def featured(self, request):
         featured_qs = self.get_queryset().filter(is_featured=True)[:10]
         page = self.paginate_queryset(featured_qs)
-        serializer = ArticleListSerializer(page, many=True, context={"request": request})
+        serializer = ArticleListSerializer(page, many=True, context={"request":request})
         return self.get_paginated_response(serializer.data)
 
 
