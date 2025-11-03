@@ -1,3 +1,4 @@
+import admin
 import abc
 import math
 
@@ -57,7 +58,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ("id", "title", "slug", "summary", "author", "category", "tags", "published", "publish_at", "is_featured", "url")
+        fields = ("id", "title", "slug", "summary", "tags", "published", "publish_at", "is_featured", "url")
         ead_only_fields = ("id", "slug", "author")
 
 

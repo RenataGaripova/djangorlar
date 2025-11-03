@@ -36,7 +36,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     filterset_fields = ("category__slug", "tags__slug", "author__id", "published")
     search_fields = ("title", "summary", "content")
-    ordering_fields = ("publish_at", "created_at", "is_featured")
+    ordering_fields = ("publish_at", "created_at")
     pagination_class = StandardResultsSetPagination
 
     def get_serializer_class(self):

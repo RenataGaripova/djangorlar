@@ -88,7 +88,7 @@ class Article(TimeStampedModel):
     is_featured = models.BooleanField(default=False)
 
     # optional hero image
-    hero_image = models.ImageField(upload_to="news/hero_images/images", null=True, blank=True)
+    hero_image = models.ImageField(upload_to="/hero_images/", null=False, blank=False)
 
     objects = ArticleQuerySet.as_manager()
 
