@@ -58,31 +58,12 @@ class ArticleListSerializer(serializers.ModelSerializer):
         ead_only_fields = ("id", "slug", "author")
 
 
-class ArticleDetailSerializer(serializers.ModelSerializer):
-    author = UserPreviewSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
-    absolute_url = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Article
-        exclude = ()
-        read_only_fields = ("id", "slug", "author", "created_at", "updated_at")
-
-    def get_absolute_url(self, obj):
-        request = self.context.get("request")
-        if request:
-            return request.build_absolute_uri(obj.get_absolute_url())
-        return obj.get_absolute_url()
-
-
 class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
-    tag_names = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
+    tag_names = serializers.ListField(child=serializers.CharField(), required=False)
 
     class Meta:
         model = Article
-        fields = ("title", "summary", "content", "category", "tag_names", "published", "publish_at", "is_featured", "hero_image")
+        fields = ("title", "summary", "published", "publish_at", "is_featured", "hero_image")
 
     def create(self, validated_data):
         tag_names = validated_data.pop("tag_names", [])
@@ -105,3 +86,7 @@ class ArticleCreateUpdateSerializer(serializers.ModelSerializer):
             tags = [Tag.objects.get_or_create(name=n)[0] for n in tag_names]
             instance.tags.set(tags)
         return instance
+
+
+class ArticleDeleteSerializer(serializers.ModelSerializer):
+    pass
