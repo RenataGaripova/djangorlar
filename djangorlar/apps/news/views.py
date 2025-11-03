@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -14,9 +16,9 @@ from .serializers import (
 
 
 class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 19
+    page_size = 12
     page_size_query_param = "page_size"
-    max_page_size = 789
+    max_page_size = 345
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -31,8 +33,8 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.select_related("category", "author").prefetch_related("tags")
     permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter, filters.BaseFilterBackend)
-    filterset_fields = ("category__slug", "tags__slug", "author__id")
+    filter_backends = (filters.SearchFilter,)
+    filterset_fields = ("category__slug", "tags__slug", "author__id", "published")
     search_fields = ("title", "summary", "content")
     ordering_fields = ("publish_at", "created_at")
     pagination_class = StandardResultsSetPagination

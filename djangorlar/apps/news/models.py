@@ -1,10 +1,20 @@
+import math
+import datetime
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.urls import reverse
 from django.utils import timezone
 
-User = get_user_model()
+from django.contrib.auth import base_user
+
+from abstracts.models import AbstractBaseModel
+
+
+User = base_user()
+
+default_time = datetime.datetime.now()
 
 
 class TimeStampedModel(models.Model):
@@ -12,6 +22,7 @@ class TimeStampedModel(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField()
 
     class Meta:
         abstract = True
@@ -23,8 +34,8 @@ class Category(models.Model):
     description = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["slug"]
-        verbose_name_plural = "Categories"
+        ordering = ["id"]
+        verbose_name_plural = "categories"
 
     def __str__(self):
         return self.name
@@ -35,11 +46,11 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("news-news:category-detail", kwargs={"slug": self.slug})
+        return reverse("news:category-detail-super", kwargs={"slug": self.slug})
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=76, unique=True)
     slug = models.SlugField(max_length=60, unique=True, blank=True)
 
     class Meta:
@@ -65,12 +76,11 @@ class ArticleQuerySet(models.QuerySet):
 
 class Article(TimeStampedModel):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="articles")
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=455)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
-    summary = models.TextField(blank=True)
     content = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, related_name="related_articles")
-    tags = models.ManyToManyField(Tag, blank=True, related_name="articles_all")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="articles")
+    tags = models.ManyToManyField(Tag, blank=False, related_name="articles")
 
     # publication controls
     published = models.BooleanField(default=False)
@@ -91,9 +101,8 @@ class Article(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.title)[:250]
+            base = slugify(self.title)[:258]
             slug = base
-            # ensure uniqueness
             counter = 0
             while Article.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 counter += 1
@@ -106,8 +115,8 @@ class Article(TimeStampedModel):
 
 
 class Comment(TimeStampedModel):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments_all")
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    article = models.ForeignKey(Article, on_delete=models.SET_NULL, related_name="comments", null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False)
     name = models.CharField(max_length=120, blank=True)
     email = models.EmailField(blank=True)
     body = models.TextField()
@@ -117,4 +126,4 @@ class Comment(TimeStampedModel):
         ordering = ["created_at"]
 
     def __str__(self):
-        return f"Comment by {self.name or self.user or 'Anonymous'} on {self.article}"
+        return f"Comment by guest {self.name or self.user or 'Anonymous'} on {self.article}"
